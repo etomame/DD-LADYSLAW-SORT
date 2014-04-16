@@ -1,4 +1,4 @@
 DD-LADYSLAW-SORT
 ================
 
-Variable pass width animated pixel sorter
+Variable pass width animated pixel sorter for processing.
