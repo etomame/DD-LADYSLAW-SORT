@@ -1,0 +1,202 @@
+//------------------------------DD-LADYSLAW SORT------------------------------//
+
+//The MIT License (MIT)
+
+//Copyright (c) 2014 Declan Kolakowski
+
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+
+boolean animated = false;
+String imageName = "image.filetype";
+
+boolean lowerDir=true;
+boolean upperDir=false;
+int lowerThreshold = 100;
+int upperThreshold = 155;
+
+void setup()
+{
+  size(1000,800);
+  
+  PImage img = loadImage(imageName);
+  
+  img.loadPixels();
+  
+  boolean[] toChange = new boolean[img.pixels.length];
+  //make copy of pixels so that passes are non-destructive
+  color[] pix = img.pixels;
+  
+  //single pass parameters go here.
+  for(int i = 0; i < img.pixels.length; i++)
+  {
+    int singleLowerPassThreshold = 100;
+    if(red(img.pixels[i]) < singleLowerPassThreshold 
+    && green(img.pixels[i]) < singleLowerPassThreshold 
+    && blue(img.pixels[i]) < singleLowerPassThreshold)
+    {
+      toChange[i] = true;
+    }
+    
+    int singleUpperPassThreshold = 150;
+    if(red(img.pixels[i]) > singleUpperPassThreshold 
+    && green(img.pixels[i]) > singleUpperPassThreshold 
+    && blue(img.pixels[i]) > singleUpperPassThreshold)
+    {
+      toChange[i] = true;
+    }
+  }
+  
+  for(int i = 0; i < img.pixels.length; i++)
+  {
+    if(toChange[i])
+    {
+      for(int j = 1; j < 10; j++)
+      {
+        int index = i+j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+        
+        index = i-j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+        
+        index = (i-img.width*j)+j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+        
+        index = (i+img.width*j)-j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+      }
+    }
+  }
+  
+  image(img,0,0);
+}
+
+void draw()
+{
+  
+  if(animated)
+  {
+    PImage img = loadImage(imageName);
+  
+  img.loadPixels();
+  
+  boolean[] toChange = new boolean[img.pixels.length];
+  color[] pix = img.pixels;
+  
+  //Add your animation code here to lower/raise tolerance thresholds:
+  //randomised etc.
+  if(lowerDir)
+    {
+      lowerThreshold--;
+      if(lowerThreshold <= 50)
+      {
+        lowerDir=false;
+      }
+    }
+    else
+    {
+      lowerThreshold++;
+      if(lowerThreshold >= 100)
+      {
+        lowerDir=true;
+      }
+    }
+    
+    if(upperDir)
+    {
+      upperThreshold--;
+      if(upperThreshold <= 155)
+      {
+        upperDir=false;
+      }
+    }
+    else
+    {
+      upperThreshold++;
+      if(upperThreshold >=205)
+      {
+        upperDir=true;
+      }
+    }
+  
+  //real time pixel processing
+  for(int i = 0; i < img.pixels.length; i++)
+  { 
+    if(red(img.pixels[i]) < lowerThreshold 
+    && green(img.pixels[i]) < lowerThreshold 
+    && blue(img.pixels[i]) < lowerThreshold)
+    {
+      toChange[i] = true;
+    }
+    
+    if(red(img.pixels[i]) > upperThreshold 
+    && green(img.pixels[i]) > upperThreshold 
+    && blue(img.pixels[i]) > upperThreshold)
+    {
+      toChange[i] = true;
+    }
+  }
+  
+  for(int i = 0; i < img.pixels.length; i++)
+  {
+    if(toChange[i])
+    {
+      for(int j = 1; j < 10; j++)
+      {
+        int index = i+j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+        
+        index = i-j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+        
+        index = (i-img.width*j)+j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+        
+        index = (i+img.width*j)-j;
+        if(index > 0 && index < img.pixels.length)
+        {
+          img.pixels[index] = pix[i];
+        }
+      }
+    }
+  }
+  
+    image(img,0,0);
+  }
+}
